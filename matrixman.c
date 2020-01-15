@@ -147,7 +147,7 @@ MATRIX* createMatrixFromString(char** vectorsAsString, int height, char* name) {
 
 char* readAllCharacters(char* filePath) {
     FILE *file;
-    file = fopen(filePath, "r");
+    file = fopen(filePath, "r"); if (file == NULL) return NULL;
     char* characters = malloc(sizeof(char));
     int charCount = 0;
     int c = fgetc(file);
@@ -239,7 +239,7 @@ VECTOR** vecRead(char* path, char* vecFileName, VECTOR** vectorArray, int* vecto
     char arrayPath[strlen(path)];
     strcpy(arrayPath, path);
     char* totalPath = strcat(arrayPath, vecFileName);
-    char* vecString = readAllCharacters(totalPath);
+    char* vecString = readAllCharacters(totalPath); if (!vecString) {fprintf(file, "error\n"); return vectorArray;}
     char fileName[strlen(vecFileName)];
     strcpy(fileName, vecFileName);
     VECTOR* newVectorFromFile = buildVectorFromString(vecString, strtok(vecFileName, "."));
@@ -285,8 +285,8 @@ MATRIX** vecStack(VECTOR* vector1, VECTOR* vector2, char* direction, char* name,
     int height = 0;
     int width = 0;
 
-    if (vector1->arraySize != vector2->arraySize) {
-        fprintf(file, "Error. Vector sizes are not equal");
+    if (!vector1 || !vector2 || vector1->arraySize != vector2->arraySize) {
+        fprintf(file, "error\n");
         return matrices;
     }
 
@@ -492,6 +492,7 @@ void pad(MATRIX* matrix, int incHeight, int incWidth, char* mode, FILE *file) {
 
 void padVal(MATRIX* matrix, int incHeight, int incWidth, int val, FILE *file) {
     int i;
+    if (!matrix) {fprintf(file, "error\n");return;}
     for (i = 0; i < matrix->height; ++i) {
         matrix->multiArray[i] = realloc(matrix->multiArray[i], sizeof(int) * (matrix->width + incWidth));
         int j;
