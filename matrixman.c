@@ -222,15 +222,15 @@ MATRIX** matZeros(char* name, char* height, char* width, MATRIX** matrixArray, i
 VECTOR* buildVectorFromString(char* vecString, char* vecName) {
     int i = 0;
     int count = 0;
-    int size = getVectorSizeReadFromFile(vecString);
+    int size = 0;
     int* array = malloc(sizeof(int) * size);
-
-    while (vecString[i] != '\0') {
+    char* number = strtok_r(vecString, " ", &vecString);
+    while (number) {
         if (vecString[i] != ' '){
-            array[count] = (int) vecString[i] - '0';
+            array = realloc(array, sizeof(int) * (size + 1)); array[size] = atoi(number);
             count++;
         }
-        i++;
+        size++; number = strtok_r(vecString, " ", &vecString);
     }
     return initializeVector(vecName, size, array);
 }
